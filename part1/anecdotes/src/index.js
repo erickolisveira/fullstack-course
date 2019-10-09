@@ -11,16 +11,14 @@ const App = (props) => {
    const [selected, setSelected] = useState(0);
    const [anecdotes, setAnecs] = useState(props.anecdotes);
    const [mostVotes, setMostVotes] = useState(0);
-   
+
    //Will run only once when the component mount
-   //So it can show a randow quote on the start,
+   //So it can show a randon quote at the start,
    //instead of the quote on anecdotes[0]
    const useMountEffect = (funct) => useEffect(funct, []);
 
-   const handleNewAnecdote = () => {
-      setSelected(Math.floor(Math.random() * anecdotes.length));
-   }
-
+   const handleNewAnecdote = () => setSelected(Math.floor(Math.random() * anecdotes.length));
+   
    const handleVote = () => {
       const anecdotesCopy = [...anecdotes];
       anecdotesCopy[selected].votes += 1;
@@ -28,14 +26,13 @@ const App = (props) => {
       getNewMostVotes();
    }
 
-
    const getNewMostVotes = () => {
       let indexOfGreatest = 0;
       let maxValue = anecdotes[0].votes;
       anecdotes.forEach((element, index) => {
          if (element.votes > maxValue) {
-            indexOfGreatest = index;
             maxValue = element.votes;
+            indexOfGreatest = index;
          }
       });
       setMostVotes(indexOfGreatest);
