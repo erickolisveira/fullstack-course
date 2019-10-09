@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 
 const Header = (props) => <h1>{props.name}</h1>
@@ -14,7 +14,7 @@ const Content = (props) => {
             )
          }
       </div>
-   );  
+   );
 }
 
 const Part = (props) => <p>{props.part} || Exercises: {props.exercises}</p>
