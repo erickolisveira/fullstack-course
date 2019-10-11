@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 
 const Title = ({ title }) => 
    <h2>{title}</h2>
@@ -40,12 +41,21 @@ const PersonForm = (props) => {
 }
 
 const App = () => {
-   const [persons, setPersons] = useState([
-      { name: "Erick Oliveira", number: '000000000000' },
-   ]);
+   const [persons, setPersons] = useState([]);
    const [newName, setNewName] = useState('');
    const [newNumber, setNewNumber] = useState('');
    const [search, setSearch] = useState('');
+
+   const getData = () => {
+      console.log('getting data...');
+      axios.get('http://localhost:3001/persons')
+      .then(res => {
+         console.log(res.data);
+         setPersons(res.data);
+      });
+   }
+
+   useEffect(getData, []);
 
    const handleFindChange = (event) =>
       setSearch(event.target.value);
