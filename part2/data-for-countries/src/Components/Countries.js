@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const API = 'http://api.weatherstack.com/current?access_key=535b1bc971132e0ffe2f0f5930a12d67&query='
+
 const Country = ({ country }) => 
    country.name.concat("  ");
 
@@ -9,17 +11,14 @@ const BtnShowHide = ({isPressed, handleClick}) =>
 
 const ShowCountry = ({country}) => {
    const [isPressed, setIsPressed] = useState(false);
-   const handleClick = () => {
-      setIsPressed(!isPressed);
-   }
    return (
       <div>
          {
             isPressed 
-            ? <CountryInfo country={country}/> 
-            : <Country country={country}/>
+            ? <CountryInfo country={country} /> 
+            : <Country country={country} />
          }
-         <BtnShowHide isPressed={isPressed} handleClick={handleClick} />
+         <BtnShowHide isPressed={isPressed} handleClick={() => setIsPressed(!isPressed)} />
       </div>
    );
 }
@@ -27,29 +26,31 @@ const ShowCountry = ({country}) => {
 const Languages = ({languages}) => 
    languages.map(language => <li key={language.name}>{language.name}</li>)
 
-const Weather = ({country}) => {
-   const [weather, setWeather] = useState({});
-
-   useEffect(() => {
-      axios.get(`http://api.weatherstack.com/current?access_key=535b1bc971132e0ffe2f0f5930a12d67&query=${country.name}`)
-      .then(res => {
-         setWeather(res.data.current)
-      }).catch(err => console.log(err));
-   }, [country.name]);
-
-   console.log(weather.weather_icons)
+const Weather = ({capital, weather}) => {
    return (
       <div>
-         <h2>Weather in {country.capital}</h2>
-         <b>Temperature: </b>{weather.temperature} °C <br/>
-         {
-            weather.weather_icons.map(icon => <img src={icon}/>)
-         }
+         <h2>Weather in {capital}</h2>
+         <b>Temperature: </b> {weather.temperature} °C <br/>
+         <img src={weather.weather_icons} alt="weather icon"/> <br/>
+         {weather.weather_descriptions} <br />
+         <b>Wind: </b> {weather.wind_speed} kph direction {weather.wind_dir}
       </div>
    );
 }
 
 const CountryInfo = ({ country }) => {
+   const [weather, setWeather] = useState({
+      current: {},
+   });
+
+   useEffect(() => {
+      async function loadWeather() {
+         const result = await axios.get(API + country.name);
+         setWeather({current: result.data.current});
+      }
+      loadWeather();
+   }, [country]);
+
    return (
       <div>
          <h2>{country.name}</h2>
@@ -63,9 +64,8 @@ const CountryInfo = ({ country }) => {
          </ul>
          <img src={country.flag}
             alt="Country flag"
-            width="200" height="150"
-         />
-         <Weather country={country} />
+            width="200" height="150" />
+         <Weather capital={country.capital} weather={weather.current} />
       </div>
    );
 }

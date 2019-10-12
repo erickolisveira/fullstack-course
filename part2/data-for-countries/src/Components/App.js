@@ -8,7 +8,7 @@ const SearchField = ({ onChange, state }) =>
    </div>
 
 const App = () => {
-   const [searchField, setSearchField] = useState('braz');
+   const [searchField, setSearchField] = useState('');
    const [countries, setCountries] = useState([]);
 
    const handleSearchFieldChange = (e) =>
