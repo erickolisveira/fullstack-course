@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import phoneService from '../services/phones';
 
-const Title = ({ title }) => 
+const Title = ({ title }) =>
    <h2>{title}</h2>
 
-const Person = (props) =>
-   <div>{props.name} {props.number}</div>
+const Person = ({ name, number, handleDelete }) =>
+   <div>
+      {name} {number}
+      <button onClick={handleDelete}>delete</button>
+   </div>
 
-const Persons = ({ persons }) =>
+const Persons = ({ persons, handleDelete }) =>
    persons.map(person =>
       <Person
-         key={person.id}
+         key={person.name}
          name={person.name}
-         number={person.number} />
+         number={person.number}
+         handleDelete={() => handleDelete(person)}
+      />
    )
 
 const Filter = (props) =>
@@ -24,14 +29,14 @@ const Filter = (props) =>
    </div>
 
 const PersonForm = (props) => {
-   const { nameChange, phoneChange, formSubmit, name, number } = props;
+   const { nameChange, numberChange, formSubmit, newPerson } = props;
    return (
       <form onSubmit={formSubmit}>
          <div>
-            Name: <input onChange={nameChange} value={name} />
+            Name: <input onChange={nameChange} value={newPerson.name} />
          </div>
          <div>
-            Number: <input onChange={phoneChange} value={number} />
+            Number: <input onChange={numberChange} value={newPerson.number} />
          </div>
          <div>
             <button type="submit">Add</button>
@@ -73,7 +78,12 @@ const App = () => {
          });
    }
 
-   useEffect(getData, []);
+   const deletePerson = (person) => {
+      if (window.confirm(`${person.name} will be deleted. Proceed?`)) {
+         phoneService.remove(person.id);
+         setPersons(persons.filter(p => p.id !== person.id))
+      }
+   }
 
    const handleFindChange = (event) =>
       setSearch(event.target.value);
