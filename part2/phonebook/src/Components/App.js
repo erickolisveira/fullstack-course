@@ -54,6 +54,20 @@ const App = () => {
       });
    }
 
+   const addPerson = () => {
+      const newPerson = {
+         name: newNumber,
+         number: newNumber, 
+      };
+      phoneService
+         .create(newPerson)
+         .then(phoneRetrieved => {
+            setPersons(persons.concat(phoneRetrieved));
+            setNewName('');
+            setNewNumber('');
+         });
+   }
+
    useEffect(getData, []);
 
    const handleFindChange = (event) =>
@@ -74,10 +88,7 @@ const App = () => {
       event.preventDefault();
       persons.find(person => person.name === newName)
          ? alert(`${newName} is already added to phonebook`)
-         : setPersons(persons.concat({
-            name: newName,
-            number: newNumber,
-         }));
+         : addPerson();
       setNewName('');
       setNewNumber('');
    }
