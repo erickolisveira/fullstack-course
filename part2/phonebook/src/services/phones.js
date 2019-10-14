@@ -11,4 +11,9 @@ const create = newPhone => {
    return request.then(response => response.data);
 }
 
-export default { getAll, create }
+const remove = id => {
+   return axios.delete(`${baseUlr}/${id}`)
+   .then(res => console.log(res));
+}
+
+export default { getAll, create, remove }
