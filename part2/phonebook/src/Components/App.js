@@ -42,29 +42,34 @@ const PersonForm = (props) => {
 
 const App = () => {
    const [persons, setPersons] = useState([]);
-   const [newName, setNewName] = useState('');
-   const [newNumber, setNewNumber] = useState('');
+   const [newPerson, setNewPerson] = useState({
+      name: '',
+      number: ''
+   });
    const [search, setSearch] = useState('');
 
-   const getData = () => {
-      phoneService
-      .getAll()
-      .then(persons => {
-         setPersons(persons);
+   const clearFields = () => {
+      setNewPerson({
+         name: '',
+         number: ''
       });
    }
 
+   const getData = () => {
+      phoneService
+         .getAll()
+         .then(persons => {
+            setPersons(persons);
+         });
+   }
+   useEffect(getData, []);
+
    const addPerson = () => {
-      const newPerson = {
-         name: newNumber,
-         number: newNumber, 
-      };
       phoneService
          .create(newPerson)
          .then(phoneRetrieved => {
             setPersons(persons.concat(phoneRetrieved));
-            setNewName('');
-            setNewNumber('');
+            clearFields();
          });
    }
 
@@ -73,16 +78,11 @@ const App = () => {
    const handleFindChange = (event) =>
       setSearch(event.target.value);
 
-   const personsToShow = search === '' ? persons :
-      persons.filter(person =>
-         person.name.toLowerCase()
-         .includes(search.toLowerCase()));
-
    const handleNameChange = (event) =>
-      setNewName(event.target.value);
+      setNewPerson({ ...newPerson, name: event.target.value });
 
-   const handlePhoneChange = (event) =>
-      setNewNumber(event.target.value);
+   const handleNumberChange = (event) =>
+      setNewPerson({ ...newPerson, number: event.target.value });
 
    const handleFormSubmit = (event) => {
       event.preventDefault();
@@ -93,6 +93,11 @@ const App = () => {
       setNewNumber('');
    }
 
+   const personsToShow = search === '' ? persons :
+      persons.filter(person =>
+         person.name.toLowerCase()
+            .includes(search.toLowerCase()));
+
    return (
       <div>
          <Title title='Phonebook' />
@@ -100,12 +105,12 @@ const App = () => {
             search={search} />
          <Title title='Add a new' />
          <PersonForm nameChange={handleNameChange}
-            phoneChange={handlePhoneChange}
+            numberChange={handleNumberChange}
             formSubmit={handleFormSubmit}
-            name={newName}
-            number={newNumber} />
+            newPerson={newPerson} />
          <Title title="Numbers" />
-         <Persons persons={personsToShow} />
+         <Persons persons={personsToShow}
+            handleDelete={deletePerson} />
       </div>
    )
 }
