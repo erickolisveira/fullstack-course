@@ -10,7 +10,7 @@ const Person = (props) =>
 const Persons = ({ persons }) =>
    persons.map(person =>
       <Person
-         key={person.name}
+         key={person.id}
          name={person.name}
          number={person.number} />
    )
