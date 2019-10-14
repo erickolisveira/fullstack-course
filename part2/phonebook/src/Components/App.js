@@ -96,11 +96,26 @@ const App = () => {
 
    const handleFormSubmit = (event) => {
       event.preventDefault();
-      persons.find(person => person.name === newName)
-         ? alert(`${newName} is already added to phonebook`)
-         : addPerson();
-      setNewName('');
-      setNewNumber('');
+      let found = persons.find(person => person.name === newPerson.name);
+      if(found) {
+         let response = window
+         .confirm(`${found.name} is already added to phonebook, replace the old number with a new one?`);
+         if(response) {
+            const changedPerson = {
+               name: found.name,
+               number: newPerson.number
+            }
+            phoneService.update(found.id, changedPerson)
+            .then(updatedPerson => {
+               setPersons(persons
+                  .map(person => person.id !== updatedPerson.id 
+                     ? person : updatedPerson))
+               clearFields();
+            });
+         }
+      } else {
+         addPerson();
+      }
    }
 
    const personsToShow = search === '' ? persons :
