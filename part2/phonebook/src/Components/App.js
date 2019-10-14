@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios';
+import phoneService from '../services/phones';
 
 const Title = ({ title }) => 
    <h2>{title}</h2>
@@ -47,11 +47,10 @@ const App = () => {
    const [search, setSearch] = useState('');
 
    const getData = () => {
-      console.log('getting data...');
-      axios.get('http://localhost:3001/persons')
-      .then(res => {
-         console.log(res.data);
-         setPersons(res.data);
+      phoneService
+      .getAll()
+      .then(persons => {
+         setPersons(persons);
       });
    }
 
