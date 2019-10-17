@@ -118,6 +118,11 @@ const App = () => {
                   .map(person => person.id !== updatedPerson.id 
                      ? person : updatedPerson))
                clearFields();
+               createNotification(`Number of ${updatedPerson.name} changed sucessfully`, 3000, false);
+            }).catch(() => {
+               createNotification(`${found.name} has already been removed from the server`, 3000, true);
+               setPersons(persons.filter(person => person.id !== found.id));
+               clearFields();
             });
          }
       } else {
