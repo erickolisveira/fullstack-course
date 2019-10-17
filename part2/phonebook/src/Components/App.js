@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import phoneService from '../services/phones';
+import Notification from './Notification';
 
 const Title = ({ title }) =>
    <h2>{title}</h2>
@@ -47,11 +48,16 @@ const PersonForm = (props) => {
 
 const App = () => {
    const [persons, setPersons] = useState([]);
-   const [newPerson, setNewPerson] = useState({
-      name: '',
-      number: ''
-   });
+   const [newPerson, setNewPerson] = useState({ name: '', number: '' });
    const [search, setSearch] = useState('');
+   const [notification, setNotification] = useState({message: null, isError: null});
+
+   const createNotification = (message, timeout, isError) => {
+      setNotification({message, isError});
+      setTimeout(() => {
+         setNotification({message: null, isError: null});
+      }, timeout);
+   }
 
    const clearFields = () => {
       setNewPerson({
@@ -75,6 +81,7 @@ const App = () => {
          .then(phoneRetrieved => {
             setPersons(persons.concat(phoneRetrieved));
             clearFields();
+            createNotification(`Added ${phoneRetrieved.name} to your phonebook`, 3000, false);
          });
    }
 
@@ -126,6 +133,8 @@ const App = () => {
    return (
       <div>
          <Title title='Phonebook' />
+         <Notification message={notification.message} 
+            isError={notification.isError} />
          <Filter handleFindChange={handleFindChange}
             search={search} />
          <Title title='Add a new' />
